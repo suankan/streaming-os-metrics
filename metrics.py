@@ -6,6 +6,7 @@ import time
 import psutil
 import json
 import platform
+from datetime import datetime
 
 class Metrics():
     '''
@@ -20,12 +21,25 @@ class Metrics():
         self.metrics = {
                 'snapshot_started': time.time(),
             'host_info': self.get_host_info(),
+            'cpu': {
                 'cpu_times': self.get_cpu_times(),
                 'cpu_percent': self.get_cpu_percent(),
                 'cpu_times_percent': self.get_cpu_times_percent(),
                 'cpu_stats': self.get_cpu_stats(),
                 'cpu_freq': self.get_cpu_freq(),
                 'load_average': self.get_load_average(),
+            },
+            'memory': {
+                'virtual_memory': self.get_virtual_memory(),
+                'swap_memory': self.get_swap_memory()
+            },
+            'disks': {
+                'disk_usage': self.get_disk_usage(),
+                'disk_io_counters': self.get_disk_io_counters()
+            },
+            'network': {
+                'net_io_counters': self.get_net_io_counters()
+            },
                 'snapshot_finished': time.time()
             }
 
@@ -33,8 +47,10 @@ class Metrics():
         '''
         Return a dict with hostname, OS, kernel, release.
         '''
-        return dict(platform.uname()._asdict())
-
+        hostinfo = dict(platform.uname()._asdict())
+        # Add boot time
+        hostinfo['boot_time'] = datetime.utcfromtimestamp(psutil.boot_time()).strftime('%Y-%m-%d %H:%M:%S')
+        return hostinfo
 
     def get_cpu_times(self):
         '''
@@ -82,6 +98,39 @@ class Metrics():
         list1 = ['over_1_min', 'over_5_min', 'over_15_min']
         list2 = list(psutil.getloadavg())
         return dict(zip(list1, list2))
+
+    def get_virtual_memory(self):
+        '''
+        Returns a dict with statistics about system memory usage.
+        '''
+        return psutil.virtual_memory()._asdict()
+
+    def get_swap_memory(self):
+        '''
+        Returns dict with system swap memory statistics.
+        '''
+        return psutil.swap_memory()._asdict()
+
+    def get_disk_usage(self):
+        '''
+        Returns a dict with disk usage info for each disk.
+        '''
+        disks_usage = {}
+        for disk in psutil.disk_partitions():
+            disks_usage[disk.mountpoint] = psutil.disk_usage(disk.mountpoint)._asdict()
+        return disks_usage
+
+    def get_disk_io_counters(self):
+        '''
+        Returns a dict with system-wide disk I/O statistics.
+        '''
+        return psutil.disk_io_counters()._asdict()
+
+    def get_net_io_counters(self):
+        '''
+        Returns a dict with system-wide network I/O statistics
+        '''
+        return psutil.net_io_counters()._asdict()
 
     def to_json(self):
         return json.dumps(self.metrics)
