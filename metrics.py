@@ -2,20 +2,23 @@
 This is a module with classes implementing gathering OS metrics.
 '''
 
+from datetime import datetime
 import time
-import psutil
 import json
 import platform
-from datetime import datetime
+import psutil
+
 
 class Metrics():
     '''
     This class gets OS metrics using psutil lib.
     More info: https://psutil.readthedocs.io/en/latest/#psutil-documentation
     '''
+
     def __init__(self):
         # Create a list of CPUs like ['cpu1', 'cpu2', ... , 'cpuN'] for further zipping
-        self.cpus = ['cpu' + str(item) for item in range(psutil.cpu_count(logical=True))]
+        self.cpus = ['cpu' + str(item)
+                     for item in range(psutil.cpu_count(logical=True))]
         self.snapshot_started = time.time()
         self.host_info = self.get_host_info()
         self.cpu_times = self.get_cpu_times()
@@ -37,7 +40,8 @@ class Metrics():
         '''
         hostinfo = dict(platform.uname()._asdict())
         # Add boot time
-        hostinfo['boot_time'] = datetime.utcfromtimestamp(psutil.boot_time()).strftime('%Y-%m-%d %H:%M:%S')
+        hostinfo['boot_time'] = datetime.utcfromtimestamp(
+            psutil.boot_time()).strftime('%Y-%m-%d %H:%M:%S')
         return hostinfo
 
     def get_cpu_times(self):
@@ -45,7 +49,8 @@ class Metrics():
         Returns dict of dicts for each CPU with seconds that it has spent in different modes.
         '''
         # Zip together list of CPUs and their times .
-        list_cpu_times = [item._asdict() for item in psutil.cpu_times(percpu=True)]
+        list_cpu_times = [item._asdict()
+                          for item in psutil.cpu_times(percpu=True)]
         return dict(zip(self.cpus, list_cpu_times))
 
     def get_cpu_percent(self):
@@ -53,14 +58,15 @@ class Metrics():
         Returns dict of CPU utilizations percentage for each CPU.
         '''
         # Zip together list of CPUs and their utilisations.
-        return dict(zip(self.cpus, psutil.cpu_percent(interval=0.5, percpu=True)))
+        return dict(zip(self.cpus, psutil.cpu_percent(interval=0.1, percpu=True)))
 
     def get_cpu_times_percent(self):
         '''
         Returns dict of dicts for each CPU with times
         '''
         # Zip together list of CPUs and their times percents.
-        list_cpu_times_percents = [item._asdict() for item in psutil.cpu_times_percent(interval=0.5, percpu=True)]
+        list_cpu_times_percents = [
+            item._asdict() for item in psutil.cpu_times_percent(interval=0.1, percpu=True)]
         return dict(zip(self.cpus, list_cpu_times_percents))
 
     def get_cpu_stats(self):
@@ -71,10 +77,12 @@ class Metrics():
 
     def get_cpu_freq(self):
         '''
-        Returns dict of dicts for each CPU with current, min and max frequencies expressed in Mhz.
+        Returns dict of dicts for each CPU with
+        current, min and max frequencies expressed in Mhz.
         '''
         # Zip together list of CPUs and their frequencies stats.
-        list_cpu_freqs = [item._asdict() for item in psutil.cpu_freq(percpu=True)]
+        list_cpu_freqs = [item._asdict()
+                          for item in psutil.cpu_freq(percpu=True)]
         return dict(zip(self.cpus, list_cpu_freqs))
 
     def get_load_average(self):
@@ -104,7 +112,8 @@ class Metrics():
         '''
         disks_usage = {}
         for disk in psutil.disk_partitions():
-            disks_usage[disk.mountpoint] = psutil.disk_usage(disk.mountpoint)._asdict()
+            disks_usage[disk.mountpoint] = psutil.disk_usage(
+                disk.mountpoint)._asdict()
         return disks_usage
 
     def get_disk_io_counters(self):
@@ -120,5 +129,7 @@ class Metrics():
         return psutil.net_io_counters()._asdict()
 
     def to_json(self):
+        '''
+        Returns self object converted into JSON.
+        '''
         return json.dumps(self.__dict__)
-
