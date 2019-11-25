@@ -5,6 +5,7 @@ This is a module with classes implementing gathering OS metrics.
 import time
 import psutil
 import json
+import platform
 
 class Metrics():
     '''
@@ -17,8 +18,8 @@ class Metrics():
         self.list_cpus = ['cpu' + str(item) for item in range(psutil.cpu_count(logical=True))]
 
         self.metrics = {
-            time.time(): {
                 'snapshot_started': time.time(),
+            'host_info': self.get_host_info(),
                 'cpu_times': self.get_cpu_times(),
                 'cpu_percent': self.get_cpu_percent(),
                 'cpu_times_percent': self.get_cpu_times_percent(),
@@ -27,7 +28,13 @@ class Metrics():
                 'load_average': self.get_load_average(),
                 'snapshot_finished': time.time()
             }
-        }
+
+    def get_host_info(self):
+        '''
+        Return a dict with hostname, OS, kernel, release.
+        '''
+        return dict(platform.uname()._asdict())
+
 
     def get_cpu_times(self):
         '''
