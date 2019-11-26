@@ -13,12 +13,12 @@ We use Confluent python lib [confluent_kafka](https://github.com/confluentinc/co
 
 ## How to execute unit tests
 
-Please see details on what exactly do we test, how and why in the code.
+Please [see the code for details](https://github.com/suankan/streaming-os-metrics/blob/master/metrics_test.py#L10-L25) on what exactly do we test, how and why.
 
 You can execute tests using this example:
 
 ```
-$ python -m unittest discover -p *_test.py -v
+$ python -m unittest metrics_test.py -v
 test_get_methods_return_dict (metrics_test.TestMetrics) ... Testing method get_cpu_freq
 Testing method get_cpu_percent
 Testing method get_cpu_stats
