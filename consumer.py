@@ -3,8 +3,6 @@ import json
 import logging
 from confluent_kafka import Consumer
 
-logging.basicConfig(filename=args.log, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--broker", help="Specify Kafka broker servername:port")
 parser.add_argument("--cacert", help="Specify CA certificate to authenticate to Kafka broker")
@@ -24,6 +22,8 @@ conf = {
     'ssl.certificate.location': args.cert,
     'ssl.key.location': args.certkey
 }
+
+logging.basicConfig(filename=args.log, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 
 logging.info(f"Starting Kafka Consumer injesting from broker {conf['bootstrap.servers']} every {args.interval} seconds")
 consumer = Consumer(conf)
