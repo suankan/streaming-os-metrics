@@ -11,6 +11,34 @@ This project goal:
 
 We use Confluent python lib [confluent_kafka](https://github.com/confluentinc/confluent-kafka-python) because of its performance. Its based on native C lib [librdkafka](https://github.com/edenhill/librdkafka). Quick googling reveals huge performance advantage of it over other Kafka clients for Python. [Example performance comparison here](http://activisiongamescience.github.io/2016/06/15/Kafka-Client-Benchmarking/).
 
+## How to execute unit tests
+
+Please see details on what exactly do we test, how and why in the code.
+
+You can execute tests using this example:
+
+```
+$ python -m unittest discover -p *_test.py -v
+test_get_methods_return_dict (metrics_test.TestMetrics) ... Testing method get_cpu_freq
+Testing method get_cpu_percent
+Testing method get_cpu_stats
+Testing method get_cpu_times
+Testing method get_cpu_times_percent
+Testing method get_disk_io_counters
+Testing method get_disk_usage
+Testing method get_host_info
+Testing method get_load_average
+Testing method get_net_io_counters
+Testing method get_swap_memory
+Testing method get_virtual_memory
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.440s
+
+OK
+```
+
 ## Gathering OS metrics via class `Metrics`
 
 Gathering OS runtime metrics for CPU, Memory and Disks in JSON format is implemented via module [metrics.py](./metrics.py)
