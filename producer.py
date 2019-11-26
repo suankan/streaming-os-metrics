@@ -2,6 +2,7 @@ import logging
 import time
 import uuid
 import argparse
+import sys
 from metrics import Metrics
 from confluent_kafka import Producer
 
@@ -29,7 +30,7 @@ if not args.broker or not args.cacert or not args.cert or not args.certkey:
     print(f'You must specify --broker, --cacert, --cert, --certkey options to this command')
     exit(1)
 
-logging.basicConfig(filename=args.log, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 
 p = Producer({
     'bootstrap.servers': args.broker,

@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import psycopg2
+import sys
 from confluent_kafka import Consumer
 
 parser = argparse.ArgumentParser()
@@ -25,7 +26,7 @@ conf = {
     'ssl.key.location': args.certkey
 }
 
-logging.basicConfig(filename=args.log, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 
 logging.info(f"Starting Kafka Consumer injesting from broker {conf['bootstrap.servers']} every {args.interval} seconds")
 consumer = Consumer(conf)
