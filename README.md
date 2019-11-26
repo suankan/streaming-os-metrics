@@ -22,13 +22,22 @@ We use Confluent python lib [confluent_kafka](https://github.com/confluentinc/co
 
 Execute the script with specifying the Kafka broker server:port and TLS certificates.
 ```
-python producer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key
+python producer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key  --interval 2
 ```
 
 Tail the log to see how it goes:
 ```
-tail -f producer.log
+tail -f ./tmp/producer.log
 ```
 
 ## Kafka Consumer to retrieve metrics from Kafka and put them into Postgres DB
-TODO
+
+Execute the script with specifying the Kafka broker server:port and TLS certificates.
+```
+python consumer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key --interval 2
+```
+
+Tail the log to see how it goes:
+```
+tail -f ./tmp/consumer.log
+```

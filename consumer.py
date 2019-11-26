@@ -1,35 +1,42 @@
+import argparse
 import json
 import logging
 from confluent_kafka import Consumer
 
-logging.basicConfig(filename='./tmp/consumer.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.basicConfig(filename=args.log, filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--broker", help="Specify Kafka broker servername:port")
+parser.add_argument("--cacert", help="Specify CA certificate to authenticate to Kafka broker")
+parser.add_argument("--cert", help="Specify certificate to authenticate to Kafka broker")
+parser.add_argument("--certkey", help="Specify certificate key to authenticate to Kafka broker")
+parser.add_argument("--topic", help="Specify Kafka topic to write metrics to. Defaults to os-metrics", default="os-metrics")
+parser.add_argument("--interval", help="Specify polling interval for gathering metrics. Defaults to 2 sec", default=2)
+parser.add_argument("--log", help="Specify log file. Defaults to ./tmp/consumer.log", default='./tmp/consumer.log')
+args = parser.parse_args()
 
 conf = {
-    'bootstrap.servers': "kafka-39b301ca-kansuan-4650.aivencloud.com:14598",
+    'bootstrap.servers': args.broker,
     'group.id': "foo",
     'auto.offset.reset': 'earliest',
     'security.protocol': 'SSL',
-    'ssl.ca.location': 'certs/ca.pem',
-    'ssl.certificate.location': 'certs/service.cert',
-    'ssl.key.location': 'certs/service.key'
+    'ssl.ca.location': args.cacert,
+    'ssl.certificate.location': args.cert,
+    'ssl.key.location': args.certkey
 }
 
-interval = 2
-
-logging.info(f"Starting Kafka Consumer injesting from broker {conf['bootstrap.servers']} every {interval} seconds")
-
+logging.info(f"Starting Kafka Consumer injesting from broker {conf['bootstrap.servers']} every {args.interval} seconds")
 consumer = Consumer(conf)
 
-topics = ["os-metrics"]
-logging.info(f'Subscribing to kafka topics {topics}')
-consumer.subscribe(topics)
+logging.info(f'Subscribing to kafka topic {args.topic}')
+consumer.subscribe([args.topic])
 
 try:
     while True:
-        logging.info(f"Waiting {interval} seconds before next polling Kafka topice")
-        msg = consumer.poll(interval)
+        logging.info(f"Setting polling interval {args.interval} seconds to read from Kafka topic.")
+        msg = consumer.poll(args.interval)
         if msg is None:
-            logging.info(f"Have not received any message within {interval}. Retrying.")
+            logging.info(f"Have not received any message within {args.interval}. Retrying.")
             continue
         elif msg.error():
             logging.info(f"Consumer error: {msg.error()}. Retrying.")
