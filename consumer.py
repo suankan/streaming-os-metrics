@@ -34,7 +34,7 @@ consumer.subscribe([args.topic])
 try:
     while True:
         logging.info(f"Setting polling interval {args.interval} seconds to read from Kafka topic.")
-        msg = consumer.poll(args.interval)
+        msg = consumer.poll(int(args.interval))
         if msg is None:
             logging.info(f"Have not received any message within {args.interval}. Retrying.")
             continue

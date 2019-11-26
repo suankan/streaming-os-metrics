@@ -44,7 +44,7 @@ p = Producer({
 try:
     while True:
         logging.info(f'Sleeping {args.interval} seconds before next metrics collection')
-        time.sleep(args.interval)
+        time.sleep(int(args.interval))
 
         logging.info(f'Collecting metrics')
         metrics = Metrics()
