@@ -47,32 +47,33 @@ Gathering OS runtime metrics for CPU, Memory and Disks in JSON format is impleme
 
 Put `metrics.py` and `producer.py` on the server which you want to monitor.
 
-Execute the script with specifying the Kafka broker server:port, TLS certificates and interval.
+Execute `producer.py` script and specify cmd options for Kafka broker server:port, TLS certificates and interval.
 
 This script will be:
-- taking OS metrics using class `Metrics`
-- sending them to Kafka topic
+- Taking OS metrics using class `Metrics`
+- Sending them to Kafka topic
 
 ```
-python producer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key  --interval 2
-```
-
-Tail the log to see how it goes:
-```
-tail -f ./tmp/producer.log
+python producer.py \
+  --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 \
+  --cacert certs/ca.pem \
+  --cert certs/service.cert \
+  --certkey certs/service.key \
+  --interval 2
 ```
 
 ## How to execute Kafka Consumer
 
-Execute the script with specifying the Kafka broker server:port, TLS certificates and interval.
+Execute the script with specifying Kafka broker server:port, Postgres connection string, TLS certificates and polling interval.
+
+The script will start polling Kafka for new messages and will be putting obtained messages into Postgres DB.
 
 ```
-python consumer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key --interval 2
+python consumer.py \
+  --dsn 'postgres://USER:PASSWD@pg-3d2e3451-kansuan-4650.aivencloud.com:14596/defaultdb?sslmode=require' \
+  --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 \
+  --cacert certs/ca.pem \
+  --cert certs/service.cert \
+  --certkey certs/service.key \
+  --interval 2
 ```
-
-Tail the log to see how it goes:
-```
-tail -f ./tmp/consumer.log
-```
-
-TODO: put obtained metrics into Postgres DB.
