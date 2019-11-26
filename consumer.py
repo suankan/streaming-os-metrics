@@ -4,10 +4,10 @@ import logging
 from confluent_kafka import Consumer
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--broker", help="Specify Kafka broker servername:port")
-parser.add_argument("--cacert", help="Specify CA certificate to authenticate to Kafka broker")
-parser.add_argument("--cert", help="Specify certificate to authenticate to Kafka broker")
-parser.add_argument("--certkey", help="Specify certificate key to authenticate to Kafka broker")
+parser.add_argument("--broker", help="Specify Kafka broker servername:port", required=True)
+parser.add_argument("--cacert", help="Specify CA certificate to authenticate to Kafka broker", required=True)
+parser.add_argument("--cert", help="Specify certificate to authenticate to Kafka broker", required=True)
+parser.add_argument("--certkey", help="Specify certificate key to authenticate to Kafka broker", required=True)
 parser.add_argument("--topic", help="Specify Kafka topic to write metrics to. Defaults to os-metrics", default="os-metrics")
 parser.add_argument("--interval", help="Specify polling interval for gathering metrics. Defaults to 2 sec", default=2)
 parser.add_argument("--log", help="Specify log file. Defaults to ./tmp/consumer.log", default='./tmp/consumer.log')
