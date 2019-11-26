@@ -18,28 +18,17 @@ Then use `.to_json()` method to get the stats in a JSON format.
 
 We use Confluent python lib [confluent_kafka](https://github.com/confluentinc/confluent-kafka-python) because of its performance. Its based on native C lib [librdkafka](https://github.com/edenhill/librdkafka). Quick googling reveals huge performance advantage of it over other Kafka clients for Python. [Example performance comparison here](http://activisiongamescience.github.io/2016/06/15/Kafka-Client-Benchmarking/).
 
-### How [producer.py](./producer.py) works
+### How to run producer
 
-As a first iteration I simply hardcoded all Producer configs into the script:
-
-- Kafka brocker server name and port
-- TLS Sertificates for authentication
-- Name of Kafka topic to write to
-
-### How to run the producer
-
-1. Specify Aiven TSL certs in the script
-2. Specify Aiven Kafka broker server name and port in the script
-2. Execute the script:
+Execute the script with specifying the Kafka broker server:port and TLS certificates.
 ```
-python3 producer.py
+python producer.py --broker kafka-39b301ca-kansuan-4650.aivencloud.com:14598 --cacert certs/ca.pem --cert certs/service.cert --certkey certs/service.key
 ```
-4. Tail the log to see how it goes:
+
+Tail the log to see how it goes:
 ```
 tail -f producer.log
 ```
-
-TODO: Make the producer script to understand either ENV vars for configuration or cmd params.
 
 ## Kafka Consumer to retrieve metrics from Kafka and put them into Postgres DB
 TODO
