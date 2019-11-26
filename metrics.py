@@ -73,7 +73,7 @@ class Metrics():
         '''
         Returns dict of CPU interruptions and context switches.
         '''
-        return psutil.cpu_stats()._asdict()
+        return dict(psutil.cpu_stats()._asdict())
 
     def get_cpu_freq(self):
         '''
@@ -98,13 +98,13 @@ class Metrics():
         '''
         Returns a dict with statistics about system memory usage.
         '''
-        return psutil.virtual_memory()._asdict()
+        return dict(psutil.virtual_memory()._asdict())
 
     def get_swap_memory(self):
         '''
         Returns dict with system swap memory statistics.
         '''
-        return psutil.swap_memory()._asdict()
+        return dict(psutil.swap_memory()._asdict())
 
     def get_disk_usage(self):
         '''
@@ -120,13 +120,13 @@ class Metrics():
         '''
         Returns a dict with system-wide disk I/O statistics.
         '''
-        return psutil.disk_io_counters()._asdict()
+        return dict(psutil.disk_io_counters()._asdict())
 
     def get_net_io_counters(self):
         '''
         Returns a dict with system-wide network I/O statistics
         '''
-        return psutil.net_io_counters()._asdict()
+        return dict(psutil.net_io_counters()._asdict())
 
     def to_json(self):
         '''
